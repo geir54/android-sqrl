@@ -1,4 +1,20 @@
 android-sqrl
 ============
 
-android implementation of steve gibsons sqrl authentication
+Creating proof of concept code for Steve Gibson’s SQRL. 
+As some of you may know Steve Gibson has suggested a new way to do authentication. You can see the details here https://www.grc.com/sqrl/sqrl.htm. It has potential and I would like to see some proof of concept code. I therefore started throwing something together for Android. It now more or less works, but it needs a lot of improvements. If any one wants to work on it please feel free.
+
+The biggest issue right now is that the ECC code takes a couple of minuts to make a signature. The ECC code has been forked from k3d3. It had to be rewritten to work with Android. This part is kept as a separate project https://github.com/geir54/ed25519-java.
+
+Looks like something is being done server side as well https://github.com/trianglman/sqrl
+And for java https://github.com/TheBigS/SQRL
+
+To build:
+cd libs
+git clone https://github.com/LivotovLabs/zxscanlib.git
+
+cd android-sqrl\src\com\sqrl\crypto
+git clone https://github.com/geir54/ed25519-java.git
+Move the files out of ed25519-java and in to crypto
+
+Import in eclipse and it should work
