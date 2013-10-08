@@ -18,3 +18,6 @@ git clone https://github.com/geir54/ed25519-java.git
 Move the files out of ed25519-java and in to crypto
 
 Import in eclipse and it should work
+
+Also included a QR code for testing
+![QR](https://raw.github.com/geir54/android-sqrl/master/qrcode.png)
