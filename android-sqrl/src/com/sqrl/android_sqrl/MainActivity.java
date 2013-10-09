@@ -25,6 +25,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -168,14 +169,16 @@ public class MainActivity extends Activity {
 	        	response.getEntity().writeTo(ostream);
 	    
 	        	String out = ostream.toString();
-	        
+	        	Log.v("web", out);
 	        	// See if the page returned "Verified"
 	        	if (out.contains("Verified")) {
 	        		Toast.makeText(context, "Verified", Toast.LENGTH_LONG).show(); // show the user	        		
 	        	}
-	        }      
-	    } catch (ClientProtocolException e) {	       
-	    } catch (IOException e) {	      
+	        }  else {Log.v("web", "Connection not ok");}
+	    } catch (ClientProtocolException e) {	
+	    	Log.e("web", "error");
+	    } catch (IOException e) {	  
+	    	Log.e("web", "error");
 	    }
     }
 }
