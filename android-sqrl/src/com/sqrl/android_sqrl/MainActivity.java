@@ -101,9 +101,8 @@ public class MainActivity extends Activity {
         	sign = result[1];
         	editText1.setText(pubKey);        
         	editText2.setText(sign);    
-        	
-        	// TODO: Get URL from scanned code
-        	web_post("http://sqrl.host56.com/sqrl_verify.php", authReq.getURL(), sign, pubKey);	
+     
+        	web_post(authReq.getReturnURL(), authReq.getURL(), sign, pubKey);	
         }
       }
     

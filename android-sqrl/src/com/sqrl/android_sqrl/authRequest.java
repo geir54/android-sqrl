@@ -1,5 +1,7 @@
 package com.sqrl.android_sqrl;
 
+import android.util.Log;
+
 // Copyright © 2013 geir54
 
 //Contains all the info for the web page you are trying to authenticate with 
@@ -19,6 +21,15 @@ public class authRequest {
 	// The part thet should be signed
 	public String getURL() {
 		return URL;
+	}
+	
+	public String getReturnURL() 
+	{
+		String retURL = URL.substring(0, URL.indexOf("?"));
+		if (isHTTPS) retURL =  "https://" + retURL; else
+			retURL =  "http://" + retURL;
+		Log.v("web", retURL);
+		return retURL;
 	}
 		
 	 // get domain form URL
