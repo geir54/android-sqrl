@@ -45,7 +45,7 @@ public class MainActivity extends Activity {
 	private TextView textView1 = null;
 	private EditText editText1 = null;
 	private EditText editText2 = null;
-	private String URL = "";
+	private authRequest authReq; // Contains all the info for the web page you are trying to authenticate with 
 	
 	private String pubKey = "";
 	private String sign = "";
@@ -64,7 +64,7 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
             	 editText1.setText("Please wait this will take time");  
             	 confbutton.setEnabled(false);
-            	 new createSignature().execute(URL);
+            	 new createSignature().execute(authReq.getURL());
             }  });
         
         ZXScanHelper.scan(this,12345);               
@@ -76,11 +76,9 @@ public class MainActivity extends Activity {
         if (resultCode == RESULT_OK && requestCode == 12345)
         {
             String scannedCode = ZXScanHelper.getScannedCode(data);
+            authReq = new authRequest(scannedCode);
             
-            URL = removeHTTP(scannedCode);
-            String domain = getDomain(URL);
-            
-            textView1.setText("Authenticate to " + domain);           
+            textView1.setText("Authenticate to " + authReq.getDomain());           
         }
     }
   
@@ -88,7 +86,7 @@ public class MainActivity extends Activity {
         @Override
         protected String[] doInBackground(String... params) {        	 
              String URL = params[0];
-         	 byte[] privateKey = CreatePrivateKey(getDomain(URL), Master_Key); 
+         	 byte[] privateKey = CreatePrivateKey(authReq.getDomain(), Master_Key); 
     		 byte[] publicKey = ed25519.publickey(privateKey);
     		 String publicKey_s = Base64.encodeToString(publicKey, Base64.DEFAULT); 
     
@@ -106,7 +104,7 @@ public class MainActivity extends Activity {
         	editText2.setText(sign);    
         	
         	// TODO: Get URL from scanned code
-        	web_post("http://sqrl.host56.com/sqrl_verify.php", URL, sign, pubKey);	
+        	web_post("http://sqrl.host56.com/sqrl_verify.php", authReq.getURL(), sign, pubKey);	
         }
       }
     
@@ -123,21 +121,7 @@ public class MainActivity extends Activity {
     	
     	return hmac;
     }   
-
-    // remove the HTTP:// part from the URL
-    private String removeHTTP(String URL) {
-    	if (URL.contains("://")) {
-    		URL = URL.substring(URL.indexOf("://")+3);
-    	}    	
-    	return URL;
-    }
-    
-    // get domain form URL
-    private String getDomain(String URL) {    
-    	URL = URL.substring(0,URL.indexOf("/?"));    	
-    	return URL;
-    }
-    
+   
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
