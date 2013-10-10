@@ -40,12 +40,11 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
 public class MainActivity extends Activity {
-	
-	private static byte[] Master_Key = "a secret psudo random number".getBytes();
 	private TextView textView1 = null;
 	private EditText editText1 = null;
 	private EditText editText2 = null;
 	private authRequest authReq; // Contains all the info for the web page you are trying to authenticate with 
+	private identity ident = new identity();
 	
 	private String pubKey = "";
 	private String sign = "";
@@ -86,7 +85,7 @@ public class MainActivity extends Activity {
         @Override
         protected String[] doInBackground(String... params) {        	 
              String URL = params[0];
-         	 byte[] privateKey = CreatePrivateKey(authReq.getDomain(), Master_Key); 
+         	 byte[] privateKey = CreatePrivateKey(authReq.getDomain(), ident.getMasterKey()); 
     		 byte[] publicKey = ed25519.publickey(privateKey);
     		 String publicKey_s = Base64.encodeToString(publicKey, Base64.DEFAULT); 
     
