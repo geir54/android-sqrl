@@ -1,0 +1,8 @@
+.gradle
+.idea
+*.iml
+android-sqrl/bin
+android-sqrl/build
+android-sqrl/gen
+ed25519.java
+local.properties
