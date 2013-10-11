@@ -1,8 +1,12 @@
 .gradle
 .idea
+.metadata
 *.iml
+android-sqrl/.settings/
 android-sqrl/bin
 android-sqrl/build
 android-sqrl/gen
 ed25519.java
 local.properties
+android-sqrl/src/com/sqrl/crypto/README.md
+android-sqrl/src/com/sqrl/crypto/validtest.txt
