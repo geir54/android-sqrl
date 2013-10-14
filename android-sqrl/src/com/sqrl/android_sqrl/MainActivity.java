@@ -66,6 +66,16 @@ public class MainActivity extends Activity {
             	 new createSignature().execute(authReq.getURL());
             }  });
         
+     //   ident.deleteIdentityFile(); // Uncomment to restart identity
+        
+        if (!ident.isIdentityCreated()) { // Check if an identity is created
+        	// if not create it
+        	Log.i("identity", "Create new identity");
+        	ident.createMasterKey();
+        	ident.save(this.getApplicationContext());
+        }
+        
+        // Start QR activity
         ZXScanHelper.scan(this,12345);               
     }
     
