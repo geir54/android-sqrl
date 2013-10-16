@@ -16,6 +16,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 
+import com.github.dazoe.android.Ed25519;
 import com.sqrl.crypto.ed25519;
 
 import eu.livotov.zxscan.ZXScanHelper;
@@ -96,11 +97,18 @@ public class MainActivity extends Activity {
         protected String[] doInBackground(String... params) {        	 
              String URL = params[0];
          	 byte[] privateKey = CreatePrivateKey(authReq.getDomain(), ident.getMasterKey()); 
-    		 byte[] publicKey = ed25519.publickey(privateKey);
-    		 String publicKey_s = Base64.encodeToString(publicKey, Base64.DEFAULT); 
-    
-    		 byte[] signature = ed25519.signature(URL.getBytes(), privateKey, publicKey);
-    		 String sign_s = Base64.encodeToString(signature, Base64.DEFAULT); 
+    		          	 
+         	 byte[] publicKey=null;         
+         	 byte[] signature=null;
+			try {
+				privateKey = Ed25519.PrivateKeyFromSeed(privateKey);
+				publicKey = Ed25519.PublicKeyFromPrivateKey(privateKey);			 
+	    		signature = Ed25519.Sign(URL.getBytes(), privateKey);	    		
+			} catch (Exception e) {				
+				e.printStackTrace();
+			}						
+			String publicKey_s = Base64.encodeToString(publicKey, Base64.DEFAULT);  
+			String sign_s = Base64.encodeToString(signature, Base64.DEFAULT); 
               
           return new String[] {publicKey_s, sign_s};
         }
