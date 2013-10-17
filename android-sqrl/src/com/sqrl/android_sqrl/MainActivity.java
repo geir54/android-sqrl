@@ -95,18 +95,19 @@ public class MainActivity extends Activity {
     private class createSignature extends AsyncTask<String, Void, String[]> {
         @Override
         protected String[] doInBackground(String... params) {        	 
-             String URL = params[0];
-         	 byte[] privateKey = CreatePrivateKey(authReq.getDomain(), ident.getMasterKey()); 
+        	String URL = params[0];
+        	byte[] privateKey = CreatePrivateKey(authReq.getDomain(), ident.getMasterKey()); 
     		          	 
-         	 byte[] publicKey=null;         
-         	 byte[] signature=null;
-			try {
-				privateKey = Ed25519.PrivateKeyFromSeed(privateKey);
+        	byte[] publicKey=null;         
+        	byte[] signature=null;
+			
+        	try {				
 				publicKey = Ed25519.PublicKeyFromPrivateKey(privateKey);			 
 	    		signature = Ed25519.Sign(URL.getBytes(), privateKey);	    		
 			} catch (Exception e) {				
 				e.printStackTrace();
-			}						
+			}		
+        	
 			String publicKey_s = Base64.encodeToString(publicKey, Base64.DEFAULT);  
 			String sign_s = Base64.encodeToString(signature, Base64.DEFAULT); 
               
