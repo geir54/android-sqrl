@@ -66,9 +66,9 @@ public class MainActivity extends Activity {
             	 new createSignature().execute(authReq.getURL());
             }  });
         
-     //   ident.deleteIdentityFile(); // Uncomment to restart identity
+     //   ident.deleteIdentityFile(this.getApplicationContext()); // Uncomment to restart identity
         
-        if (!ident.isIdentityCreated()) { // Check if an identity is created
+        if (!ident.isIdentityCreated(this.getApplicationContext())) { // Check if an identity is created
         	// if not create it
         	Log.i("identity", "Create new identity");
         	ident.createMasterKey();

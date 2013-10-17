@@ -88,14 +88,14 @@ public class identity {
 	}
 	
 	// check if there is an Identity
-	public boolean isIdentityCreated() {
-		File file = new File("sqrl.dat");
+	public boolean isIdentityCreated(Context con) {
+		File file = con.getFileStreamPath("sqrl.dat");
 		return file.exists();
 	}
 	
 	// Deletes the identify file
-	public boolean deleteIdentityFile() {
-		File file = new File("sqrl.data");
+	public boolean deleteIdentityFile(Context con) {
+		File file = con.getFileStreamPath("sqrl.dat");
         return file.delete();
 	}
 	
