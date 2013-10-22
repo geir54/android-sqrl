@@ -1,0 +1,6 @@
+[submodule "libs/zxscanlib"]
+	path = libs/zxscanlib
+	url = https://github.com/LivotovLabs/zxscanlib.git
+[submodule "libs/Android.Ed25519"]
+	path = libs/Android.Ed25519
+	url = https://github.com/dazoe/Android.Ed25519.git

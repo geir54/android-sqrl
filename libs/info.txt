@@ -1,1 +1,0 @@
-Should contain https://github.com/LivotovLabs/zxscanlib.git
