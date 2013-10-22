@@ -36,8 +36,9 @@
                        android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
                        android:windowSoftInputMode="stateAlwaysHidden">
      </activity>
-        
-          
+     
+     <activity android:label="@string/app_name" android:name="com.sqrl.android_sqrl.loginActivity"/> 
+     <activity android:label="@string/app_name" android:name="com.sqrl.android_sqrl.newuserActivity"/>    
     </application>
 
 </manifest>
