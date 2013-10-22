@@ -9,9 +9,8 @@ The app now works with the test code here https://github.com/geir54/php-sqrl. Ch
 The old ECC code has been replaced by https://github.com/dazoe/Android.Ed25519 and the code is now really fast
 
 ####To build
-1. cd libs
-2. git clone https://github.com/LivotovLabs/zxscanlib.git
-3. git clone https://github.com/dazoe/Android.Ed25519
-4. Import in eclipse and it should work
+1. git submodule init
+2. git submodule update
+3. Import in eclipse and it should work
 
 
