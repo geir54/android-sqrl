@@ -67,17 +67,35 @@ public class MainActivity extends Activity {
             	 new createSignature().execute(authReq.getURL());
             }  });
         
-     //   ident.deleteIdentityFile(this.getApplicationContext()); // Uncomment to restart identity
+      // ident.deleteIdentityFile(this.getApplicationContext()); // Uncomment to restart identity
         
         if (!ident.isIdentityCreated(this.getApplicationContext())) { // Check if an identity is created
         	// if not create it
-        	Log.i("identity", "Create new identity");
-        	ident.createMasterKey();
+        	Log.i("id", "Create new identity");
+        	ident.createKeys();
         	ident.save(this.getApplicationContext());
         }
+        else
+        {
+        	ident.load(this.getApplicationContext());
+        }
+        
+        ident.deriveMasterKey("test pass");
+        byte[] master =ident.getMasterKey();
+        
+        Log.i("id", "master key1  " + Base64.encodeToString(master, Base64.DEFAULT));
+        
+        ident.changePassword("ninja");
+        
+        ident.deriveMasterKey("ninja");
+        byte[] master2 =ident.getMasterKey();
+        
+        Log.i("id", "master key2  " + Base64.encodeToString(master2, Base64.DEFAULT));
+        
+        
         
         // Start QR activity
-        ZXScanHelper.scan(this,12345);               
+       // ZXScanHelper.scan(this,12345);               
     }
     
     // Jumps here when QR is scanned
