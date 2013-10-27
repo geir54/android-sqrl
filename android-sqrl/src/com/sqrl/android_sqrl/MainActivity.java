@@ -68,6 +68,12 @@ public class MainActivity extends Activity {
             	 new createSignature().execute(authReq.getURL());
             }  });
         
+        // Delete identity button (just for testing/debugging)
+        final Button button1 = (Button) findViewById(R.id. button1);
+        button1.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	if (current_identity != null) current_identity.deleteIdentityFile(getApplicationContext());
+            }  });
       
         /*
         // ident.deleteIdentityFile(this.getApplicationContext()); // Uncomment to restart identity

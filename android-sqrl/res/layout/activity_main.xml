@@ -67,4 +67,14 @@
         <requestFocus />
     </EditText>
 
+    <Button
+        android:id="@+id/button1"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/confbutton"
+        android:layout_marginBottom="48dp"
+        android:text="Delete identity" />
+
 </RelativeLayout>
