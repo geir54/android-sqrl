@@ -57,23 +57,26 @@ public class loginActivity extends Activity {
 	                  startActivity(a);
 	            }  });
 		 
-		 addUsersToSpinner();
-	}
-	
-	private identity loadIdentity(String user, String passwd) {
-		identity id = new identity();
-		
-		 if (!id.isIdentityCreated(this.getApplicationContext())) { // Check if an identity is created
+		 
+		// Check if an identity is created	
+		 identity id = new identity();		 
+		 if (!id.isIdentityCreated(this.getApplicationContext())) {
 			 // If not open newidActivity
 			 Intent a = new Intent(loginActivity.this, newuserActivity.class);
              startActivity(a);
 		 }
-		 else
-	     {
-			 // load the identity
-	       	id.load(this.getApplicationContext());
-	       	id.deriveMasterKey(passwd);
-	     }
+		 
+		 addUsersToSpinner();
+	}
+	
+	private identity loadIdentity(String user, String passwd) {
+		identity id = new identity();		
+		
+		// TODO: Check if that user exists
+		
+		// load the identity
+	    id.load(this.getApplicationContext());
+	    id.deriveMasterKey(passwd);	  
 		 
 		return id;
 	}
