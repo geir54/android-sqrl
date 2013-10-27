@@ -44,8 +44,9 @@ public class MainActivity extends Activity {
 	private TextView textView1 = null;
 	private EditText editText1 = null;
 	private EditText editText2 = null;
-	private authRequest authReq; // Contains all the info for the web page you are trying to authenticate with 
-	private identity ident = new identity();
+	private Button confbutton = null;
+	private authRequest authReq = null; // Contains all the info for the web page you are trying to authenticate with 
+	private identity current_identity = null; // The currently logged in identity
 	
 	private String pubKey = "";
 	private String sign = "";
@@ -59,7 +60,7 @@ public class MainActivity extends Activity {
         editText1 = (EditText) findViewById(R.id.editText1);
         editText2 = (EditText) findViewById(R.id.editText2);  
         
-        final Button confbutton = (Button) findViewById(R.id.confbutton);
+        confbutton = (Button) findViewById(R.id.confbutton);
         confbutton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	 editText1.setText("Please wait this will take time");  
@@ -67,40 +68,73 @@ public class MainActivity extends Activity {
             	 new createSignature().execute(authReq.getURL());
             }  });
         
-      // ident.deleteIdentityFile(this.getApplicationContext()); // Uncomment to restart identity
-        
-        if (!ident.isIdentityCreated(this.getApplicationContext())) { // Check if an identity is created
+      
+        /*
+        // ident.deleteIdentityFile(this.getApplicationContext()); // Uncomment to restart identity
+                
+        if (!current_identity.isIdentityCreated(this.getApplicationContext())) { // Check if an identity is created
         	// if not create it
         	Log.i("id", "Create new identity");
-        	ident.createKeys();
-        	ident.save(this.getApplicationContext());
+        	current_identity.createKeys();
+        	current_identity.save(this.getApplicationContext());
         }
         else
         {
-        	ident.load(this.getApplicationContext());
+        	current_identity.load(this.getApplicationContext());
         }
         
-        ident.deriveMasterKey("test pass");
-        byte[] master =ident.getMasterKey();
+        current_identity.deriveMasterKey("test pass");
+        byte[] master =current_identity.getMasterKey();
         
         Log.i("id", "master key1  " + Base64.encodeToString(master, Base64.DEFAULT));
         
-        ident.changePassword("ninja");
+        current_identity.changePassword("ninja");
         
-        ident.deriveMasterKey("ninja");
-        byte[] master2 =ident.getMasterKey();
+        current_identity.deriveMasterKey("ninja");
+        byte[] master2 =current_identity.getMasterKey();
         
-        Log.i("id", "master key2  " + Base64.encodeToString(master2, Base64.DEFAULT));
+        Log.i("id", "master key2  " + Base64.encodeToString(master2, Base64.DEFAULT));       
         
-        
-        
+        */
         // Start QR activity
        // ZXScanHelper.scan(this,12345);               
     }
     
-    // Jumps here when QR is scanned
+    @Override
+    protected void onResume() {
+    	super.onResume();
+    	  if (current_identity == null) {
+          	// Show login form
+          	Intent loginAct = new Intent(MainActivity.this, loginActivity.class);
+          	startActivityForResult(loginAct, 54321);          	
+          }
+    	  else 
+    	  {    		  
+    		  if (authReq == null) ZXScanHelper.scan(this,12345);  // start the camera
+    	  }   	    	  
+    }
+    
+    // The activity is no longer visible
+    @Override
+    protected void onPause() {
+    	super.onPause();
+    	// Reset for new scan
+    	textView1.setText("");  
+    	editText1.setText("");  
+    	editText2.setText("");     	    
+    	confbutton.setEnabled(true);
+    	authReq = null;
+    }
+    
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data)
     {
+    	// From loginAct
+    	if (resultCode == RESULT_OK && requestCode == 54321) {
+    		
+    		current_identity = (identity)data.getSerializableExtra("id");   		   		
+    	}
+    	
+    	// Jumps here when QR is scanned
         if (resultCode == RESULT_OK && requestCode == 12345)
         {
             String scannedCode = ZXScanHelper.getScannedCode(data);
@@ -109,12 +143,12 @@ public class MainActivity extends Activity {
             textView1.setText("Authenticate to " + authReq.getDomain());           
         }
     }
-  
+      
     private class createSignature extends AsyncTask<String, Void, String[]> {
         @Override
         protected String[] doInBackground(String... params) {        	 
         	String URL = params[0];
-        	byte[] privateKey = CreatePrivateKey(authReq.getDomain(), ident.getMasterKey()); 
+        	byte[] privateKey = CreatePrivateKey(authReq.getDomain(), current_identity.getMasterKey()); 
     		          	 
         	byte[] publicKey=null;         
         	byte[] signature=null;

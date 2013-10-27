@@ -6,17 +6,21 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 // TODO:
 // Read user list from sqrl.dat
 
 public class loginActivity extends Activity {
+	private String TAG = "loginAct";
 	private List<String> users = new ArrayList<String>(); // List of usernames
 	private Spinner username;
 	
@@ -26,13 +30,22 @@ public class loginActivity extends Activity {
 		setContentView(R.layout.activity_login);    		
 		
 		username = (Spinner) findViewById(R.id.userSpinner);
+		final EditText passEdit = (EditText) findViewById(R.id.editText1);
 		
 		// Add listener on loginbutton
 		 final Button loginButton = (Button) findViewById(R.id.button1);
 		 loginButton.setOnClickListener(new View.OnClickListener() {
 	            public void onClick(View v) {	           
-	            	String a = username.getSelectedItem().toString();
-	            	Toast.makeText(getApplicationContext(), a, Toast.LENGTH_LONG).show();
+	            	String user = users.get(username.getSelectedItemPosition());
+	            	String pass = passEdit.getText().toString();
+	            	
+	            	identity id = loadIdentity(user, pass);
+	            	
+	            	// Send object back to parent
+	            	Intent output = new Intent();
+	            	output.putExtra("id",id);
+	            	setResult(Activity.RESULT_OK, output);
+	            	finish();
 	            }  });
 		 
 		// Add listener on new user button button
@@ -45,6 +58,24 @@ public class loginActivity extends Activity {
 	            }  });
 		 
 		 addUsersToSpinner();
+	}
+	
+	private identity loadIdentity(String user, String passwd) {
+		identity id = new identity();
+		
+		 if (!id.isIdentityCreated(this.getApplicationContext())) { // Check if an identity is created
+			 // If not open newidActivity
+			 Intent a = new Intent(loginActivity.this, newuserActivity.class);
+             startActivity(a);
+		 }
+		 else
+	     {
+			 // load the identity
+	       	id.load(this.getApplicationContext());
+	       	id.deriveMasterKey(passwd);
+	     }
+		 
+		return id;
 	}
 	
 	  // adds items to username list (spinner)

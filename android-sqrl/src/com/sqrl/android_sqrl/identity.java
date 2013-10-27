@@ -3,6 +3,7 @@ package com.sqrl.android_sqrl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -16,10 +17,10 @@ import android.util.Log;
 
 // Should hold everything related to the identity
 
-public class identity {
-	private byte[] MasterKey = new byte[32];// "a secret psudo random number".getBytes();
+public class identity implements Serializable {
+	private byte[] MasterKey = new byte[32]; // gets derived from mixKey and password 
 	private byte[] mixKey = new byte[32]; // The key that is XORed to make the master key
-	private byte[] salt = new byte[8];
+	private byte[] salt = new byte[8]; // Salt to be mixed with the password
 	private int iterations = 1000; // How many times to has the password default 1000
 	
 	public identity() {
