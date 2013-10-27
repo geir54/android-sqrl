@@ -6,6 +6,8 @@ As some of you may know Steve Gibson has suggested a new way to do authenticatio
 
 The app now works with the test code here https://github.com/geir54/php-sqrl. Check out http://sqrl.host56.com/ for a demo
 
+If you need help building the code or have questions come join us in #SQRL on efnet (IRC)
+
 The old ECC code has been replaced by https://github.com/dazoe/Android.Ed25519 and the code is now really fast
 
 ####To build
