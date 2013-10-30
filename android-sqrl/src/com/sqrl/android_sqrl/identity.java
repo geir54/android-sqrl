@@ -20,7 +20,8 @@ import android.util.Log;
 public class identity implements Serializable {
 	private byte[] MasterKey = new byte[32]; // gets derived from mixKey and password 
 	private byte[] mixKey = new byte[32]; // The key that is XORed to make the master key
-	private byte[] salt = new byte[8]; // Salt to be mixed with the password
+	private byte[] salt = new byte[8]; //  Salt to be mixed with the password
+	private byte[] verifier = new byte[16]; // Used for verifying the password
 	private int iterations = 1000; // How many times to has the password default 1000
 	
 	public identity() {
@@ -35,12 +36,17 @@ public class identity implements Serializable {
 		salt = crypto.subByte(salt, 0, 8);
 			
 		Log.i("id", Base64.encodeToString(mixKey, Base64.DEFAULT));
-		Log.i("id", Base64.encodeToString(salt, Base64.DEFAULT));
-		
+		Log.i("id", Base64.encodeToString(salt, Base64.DEFAULT));		
 	} 
 	
 	public byte[] getMasterKey() {
 		return MasterKey;
+	}
+	
+	// hash master key one more time to make verification key
+	public void makeVerificationKey(String password) {	
+		deriveMasterKey(password);
+		verifier = crypto.subByte(crypto.sha256(MasterKey),0,16);
 	}
 	
     private byte[] derivePassKey(String password) {
@@ -54,11 +60,19 @@ public class identity implements Serializable {
     	
     	return passkey;
     }
-	
-	public void deriveMasterKey(String password)
+	    
+	public boolean deriveMasterKey(String password)
 	{	
 		byte[] passkey = derivePassKey(password);
-		MasterKey = crypto.xor(passkey, mixKey);		
+		MasterKey = crypto.xor(passkey, mixKey);
+		
+		// Check it
+		byte[] verifier2 = crypto.subByte(crypto.sha256(MasterKey),0,16);		
+		if (java.util.Arrays.equals(verifier, verifier2)) {
+    		return true;
+    	} else {
+    		return false;
+    	}
 	}
 	
 	public void changePassword(String password) {
@@ -74,6 +88,7 @@ public class identity implements Serializable {
 			fis.read(mixKey, 0, 32);
 			fis.read(salt, 0, 8);		
 			fis.read(iter, 0, 4); // read the bytes for the iterations int
+			fis.read(verifier, 0, 16);
 			fis.close();
 		}
 		catch (Exception e) {			
@@ -84,6 +99,7 @@ public class identity implements Serializable {
 		Log.i("id", "mixkey " +Base64.encodeToString(mixKey, Base64.DEFAULT));
 		Log.i("id", "Salt "+ Base64.encodeToString(salt, Base64.DEFAULT));
 		Log.i("id", "iterations " +iterations);
+		Log.i("id", "verifier " +Base64.encodeToString(verifier, Base64.DEFAULT));
 	}
 	
 	// save to storage
@@ -94,6 +110,7 @@ public class identity implements Serializable {
 			fos.write(mixKey);
 			fos.write(salt);
 			fos.write(ByteBuffer.allocate(4).putInt(iterations).array()); // convert the iterations int to four bytes
+			fos.write(verifier);
 			fos.close();
 		}
 		catch (Exception e) {

@@ -27,7 +27,8 @@ public class newuserActivity extends Activity {
 	            	
 	            	if (pass.compareTo(repass) == 0) { // Check that password and retype are the same
 	            		identity id = new identity();
-	            		id.createKeys();
+	            		id.createKeys();	           			        
+	            		id.makeVerificationKey(pass);
 	                	id.save(getApplicationContext());
 	                	finish();
 	            	}

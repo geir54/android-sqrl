@@ -41,11 +41,17 @@ public class loginActivity extends Activity {
 	            	
 	            	identity id = loadIdentity(user, pass);
 	            	
-	            	// Send object back to parent
-	            	Intent output = new Intent();
-	            	output.putExtra("id",id);
-	            	setResult(Activity.RESULT_OK, output);
-	            	finish();
+	            	if (id == null) {
+	            		Toast.makeText(getApplicationContext(), "Wrong password", Toast.LENGTH_LONG).show();
+	            	}
+	            	else
+	            	{
+	            		// Send object back to parent
+	            		Intent output = new Intent();
+	            		output.putExtra("id",id);
+	            		setResult(Activity.RESULT_OK, output);
+	            		finish();
+	            	}
 	            }  });
 		 
 		// Add listener on new user button button
@@ -76,9 +82,13 @@ public class loginActivity extends Activity {
 		
 		// load the identity
 	    id.load(this.getApplicationContext());
-	    id.deriveMasterKey(passwd);	  
-		 
-		return id;
+	    if (id.deriveMasterKey(passwd)) {  		 
+	    	return id; 
+		} 
+	    	else
+		{
+			return null;
+		}
 	}
 	
 	  // adds items to username list (spinner)
