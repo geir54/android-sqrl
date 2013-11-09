@@ -2,9 +2,6 @@ package com.sqrl.android_sqrl;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +14,6 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 
 import com.github.dazoe.android.Ed25519;
-import com.sqrl.crypto.ed25519;
 
 import eu.livotov.zxscan.ZXScanHelper;
 import android.os.AsyncTask;

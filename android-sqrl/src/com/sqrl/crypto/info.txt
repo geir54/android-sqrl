@@ -1,1 +1,0 @@
-should contain https://github.com/geir54/ed25519-java
