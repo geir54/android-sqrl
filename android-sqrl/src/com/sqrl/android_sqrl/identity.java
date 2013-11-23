@@ -2,6 +2,7 @@ package com.sqrl.android_sqrl;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
@@ -84,15 +85,17 @@ public class identity implements Serializable {
 	public void load(Context con) {		
 		byte[] iter = new byte[4];
 		try {
-			FileInputStream fis = con.getApplicationContext().openFileInput("sqrl.dat");		
+			FileInputStream fis;
+			fis = con.getApplicationContext().openFileInput("sqrl.dat");
 			fis.read(mixKey, 0, 32);
 			fis.read(salt, 0, 8);		
 			fis.read(iter, 0, 4); // read the bytes for the iterations int
 			fis.read(verifier, 0, 16);
 			fis.close();
-		}
-		catch (Exception e) {			
-		}			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
 		
 		iterations = java.nio.ByteBuffer.wrap(iter).getInt(); // convert to int32
 		

@@ -17,6 +17,9 @@ public class newuserActivity extends Activity {
 		final EditText userEdit = (EditText) findViewById(R.id.editText1);
 		final EditText passEdit = (EditText) findViewById(R.id.editText2);
 		final EditText repassEdit = (EditText) findViewById(R.id.editText3);
+		userEdit.setText("User");
+		passEdit.setText("haha");
+		repassEdit.setText("haha");
 				
 		final Button button1 = (Button) findViewById(R.id.button1);
 		button1.setOnClickListener(new View.OnClickListener() {
