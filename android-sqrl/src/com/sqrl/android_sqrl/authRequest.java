@@ -2,7 +2,7 @@ package com.sqrl.android_sqrl;
 
 import android.util.Log;
 
-// Copyright © 2013 geir54
+// Copyright ï¿½ 2013 geir54
 
 //Contains all the info for the web page you are trying to authenticate with 
 public class authRequest {	
@@ -20,12 +20,13 @@ public class authRequest {
 	
 	// The part thet should be signed
 	public String getURL() {
-		return URL;
+		return URL.replace("|", "/");
 	}
 	
 	public String getReturnURL() 
 	{
 		String retURL = URL.substring(0, URL.indexOf("?"));
+		retURL = retURL.replace("|", "/");
 		if (isHTTPS) retURL =  "https://" + retURL; else
 			retURL =  "http://" + retURL;
 		Log.v("web", retURL);
@@ -34,8 +35,9 @@ public class authRequest {
 		
 	 // get domain form URL
     public String getDomain() {    
-    	String domain  = URL.substring(0,URL.indexOf("/"));    	
-    	return domain;
+    	if(URL.indexOf("|") == -1)
+    		return URL.substring(0,URL.indexOf("/"));    	
+    	else return URL.substring(0, URL.indexOf("|"));
     }
 	
 	  // remove the sqrl:// part from the URL and set isHTTPS

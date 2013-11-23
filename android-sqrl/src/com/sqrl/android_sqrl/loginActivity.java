@@ -31,6 +31,7 @@ public class loginActivity extends Activity {
 		
 		username = (Spinner) findViewById(R.id.userSpinner);
 		final EditText passEdit = (EditText) findViewById(R.id.editText1);
+		passEdit.setText("haha");
 		
 		// Add listener on loginbutton
 		 final Button loginButton = (Button) findViewById(R.id.button1);
@@ -93,8 +94,7 @@ public class loginActivity extends Activity {
 	
 	  // adds items to username list (spinner)
 	  public void addUsersToSpinner() {	 
-		users.add("User 1");
-		users.add("User 2");
+		users.add("User");
 		
 		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
 			android.R.layout.simple_spinner_item, users);
