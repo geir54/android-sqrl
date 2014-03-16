@@ -8,19 +8,22 @@ import java.util.List;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 
-import com.github.dazoe.android.Ed25519;
-
-import eu.livotov.zxscan.ZXScanHelper;
-import android.os.AsyncTask;
-import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.StrictMode;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
@@ -30,11 +33,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.NameValuePair;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
+import com.github.dazoe.android.Ed25519;
+
+import eu.livotov.zxscan.ZXScanHelper;
 
 public class MainActivity extends Activity {
 	private TextView textView1 = null;
@@ -51,6 +52,9 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);     
+        
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);                
         
         textView1 = (TextView) findViewById(R.id.textView1);
         editText1 = (EditText) findViewById(R.id.editText1);
@@ -128,8 +132,7 @@ public class MainActivity extends Activity {
     	authReq = null;
     }
     
-    protected void onActivityResult(final int requestCode, final int resultCode, final Intent data)
-    {
+    protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
     	// From loginAct
     	if (resultCode == RESULT_OK && requestCode == 54321) {
     		
@@ -205,7 +208,7 @@ public class MainActivity extends Activity {
     	HttpClient httpclient = new DefaultHttpClient();
 	    HttpPost httppost = new HttpPost(URL);
 	  
-	    try {
+	    try {	    	
 	        // Add data to post
 	        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 	        nameValuePairs.add(new BasicNameValuePair("message", message));
@@ -213,7 +216,6 @@ public class MainActivity extends Activity {
 	        nameValuePairs.add(new BasicNameValuePair("publicKey", publicKey));
 	    
 	        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));	       	        
-	        
 	        HttpResponse response = httpclient.execute(httppost); // Execute HTTP Post Request
 	    	
 	        int status = response.getStatusLine().getStatusCode();
@@ -224,16 +226,19 @@ public class MainActivity extends Activity {
 	        	response.getEntity().writeTo(ostream);
 	    
 	        	String out = ostream.toString();
-	        	Log.v("web", out);
+	        	Log.v("web", "Return: "+out);
 	        	// See if the page returned "Verified"
 	        	if (out.contains("Verified")) {
 	        		Toast.makeText(context, "Verified", Toast.LENGTH_LONG).show(); // show the user	        		
-	        	}
-	        }  else {Log.v("web", "Connection not ok");}
+		        }
+       		}  else {
+       			Log.v("web", "Connection not ok: "+status);
+       			
+        	}
 	    } catch (ClientProtocolException e) {	
-	    	Log.e("web", "error");
+	    	Log.e("web", e.getMessage(), e);
 	    } catch (IOException e) {	  
-	    	Log.e("web", "error");
+	    	Log.e("web", e.getMessage(), e);
 	    }
     }
 }

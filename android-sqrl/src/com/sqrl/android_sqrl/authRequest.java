@@ -1,5 +1,8 @@
 package com.sqrl.android_sqrl;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import android.util.Log;
 
 // Copyright © 2013 geir54
@@ -18,37 +21,75 @@ public class authRequest {
 		return isHTTPS;
 	}
 	
-	// The part thet should be signed
-	public String getURL() {
+	/**
+	 *  The part that should be signed.
+	 *  Removing the port number and login information from
+	 *  the url.
+	 */
+	public String getURL() {		
+		try {
+			URI u = new URI("http://"+URL.replaceAll("|", "/"));
+			StringBuilder sb = new StringBuilder();
+			sb.append(u.getHost());
+			sb.append(u.getPath());
+			sb.append("?");
+			sb.append(u.getQuery());		
+			
+			return sb.toString();
+		} catch (URISyntaxException e) {
+			Log.e("web", e.getMessage(), e);
+		}
 		return URL;
 	}
 	
-	public String getReturnURL() 
-	{
-		String retURL = URL.substring(0, URL.indexOf("?"));
-		if (isHTTPS) retURL =  "https://" + retURL; else
-			retURL =  "http://" + retURL;
-		Log.v("web", retURL);
+	/**
+	 * Return url should be the full url so we get the 
+	 * querystring to the server for processing. 
+	 */
+	public String getReturnURL() {
+		String retURL = (isHTTPS ? "https://" :  "http://") + URL;
+		Log.v("web", "ReturnURL: "+retURL);
 		return retURL;
 	}
 		
-	 // get domain form URL
-    public String getDomain() {    
-    	String domain  = URL.substring(0,URL.indexOf("/"));    	
+	/**
+	 * Get domain form URL. Use the URL without the port number and login information
+	 * to fetch the domain from. The scheme says to take everything
+	 * before pipe if available and turn in to domain. Otherwise
+	 * return the part before the slash.
+	 * 
+	 * @return
+	 */
+    public String getDomain() {
+    	String domain = null;
+    	if(URL.indexOf("|") > 0) {
+    		domain = URL.substring(0,URL.indexOf("|"));
+    	} else {
+    		domain = URL.substring(0,URL.indexOf("/"));
+    	}
+    	
+    	try {
+			URI u = new URI("http://"+domain);
+			StringBuilder sb = new StringBuilder();
+			sb.append(u.getHost());
+			sb.append(u.getPath());		
+	    	    	
+			Log.v("web", "Domain: "+sb.toString());
+			return sb.toString();
+    	} catch (Exception e) {
+    		Log.e("web", e.getMessage(), e);    		
+    	}
     	return domain;
     }
 	
 	  // remove the sqrl:// part from the URL and set isHTTPS
     private String removeScheme(String URL) {
-    	if (URL.substring(0, 1).compareTo("s") == 0) 
-    	{
+    	if (URL.substring(0, 1).compareTo("s") == 0) {
     		URL = URL.substring(7);
     		isHTTPS = true; 
-    	} 
-    	else  
-    	{
+    	} else {
     		URL = URL.substring(6);
-    		isHTTPS = false; 
+    		isHTTPS = false;
     	}    	
     	return URL;
     }
