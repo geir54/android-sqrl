@@ -164,18 +164,25 @@ public class MainActivity extends Activity {
         	
 			String publicKey_s = Base64.encodeToString(publicKey, Base64.DEFAULT);  
 			String sign_s = Base64.encodeToString(signature, Base64.DEFAULT); 
+			
+			String verified = "n"; // not verified yet
+			if (web_post(authReq.getReturnURL(), authReq.getURL(), sign_s, publicKey_s)) { // post the result
+				verified = "y";
+			}
               
-          return new String[] {publicKey_s, sign_s};
+            return new String[] {publicKey_s, sign_s, verified};
         }
 
         @Override
         protected void onPostExecute(String[]result) {
         	pubKey = result[0];
         	sign = result[1];
+        	
+        	Context context = getApplicationContext();
+        	if (result[2].compareTo("y") == 0) Toast.makeText(context, "Verified", Toast.LENGTH_LONG).show(); // show the user	
+        	
         	editText1.setText(pubKey);        
-        	editText2.setText(sign);    
-     
-        	web_post(authReq.getReturnURL(), authReq.getURL(), sign, pubKey);	
+        	editText2.setText(sign);        	
         }
       }
     
@@ -201,7 +208,7 @@ public class MainActivity extends Activity {
     }
     
     // Send signature and pubkey to server
-    private void web_post(String URL, String message, String signature, String publicKey) {
+    private boolean web_post(String URL, String message, String signature, String publicKey) {
     	HttpClient httpclient = new DefaultHttpClient();
 	    HttpPost httppost = new HttpPost(URL);
 	  
@@ -218,7 +225,6 @@ public class MainActivity extends Activity {
 	    	
 	        int status = response.getStatusLine().getStatusCode();
 	        
-	        Context context = getApplicationContext();
 	        if (status == HttpStatus.SC_OK) {
 	        	ByteArrayOutputStream ostream = new ByteArrayOutputStream();
 	        	response.getEntity().writeTo(ostream);
@@ -226,8 +232,8 @@ public class MainActivity extends Activity {
 	        	String out = ostream.toString();
 	        	Log.v("web", out);
 	        	// See if the page returned "Verified"
-	        	if (out.contains("Verified")) {
-	        		Toast.makeText(context, "Verified", Toast.LENGTH_LONG).show(); // show the user	        		
+	        	if (out.contains("Verified")) {	        		
+	        		return true; // return true if verified
 	        	}
 	        }  else {Log.v("web", "Connection not ok");}
 	    } catch (ClientProtocolException e) {	
@@ -235,5 +241,7 @@ public class MainActivity extends Activity {
 	    } catch (IOException e) {	  
 	    	Log.e("web", "error");
 	    }
+	    
+	    return false; // Return false if query did not return verification
     }
 }
