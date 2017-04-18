@@ -10,7 +10,7 @@ If you need help building the code or have questions come join us in #SQRL on ef
 
 The old ECC code has been replaced by https://github.com/dazoe/Android.Ed25519 and the code is now really fast
 
-####To build
+#### To build
 1. git submodule init
 2. git submodule update
 3. Import in eclipse and it should work
